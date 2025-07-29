@@ -1,4 +1,4 @@
-const sendNews = require("../../bot/sendNews");
+const sendNews = require("../bot/sendNews");
 
 module.exports = async (req, res) => {
   try {
