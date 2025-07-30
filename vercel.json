@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/news",
-      "schedule": "39 2 * * *"
+      "schedule": "9 3 * * *"
     }
   ]
 }
