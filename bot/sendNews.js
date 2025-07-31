@@ -11,14 +11,18 @@ async function sendNews() {
     return;
   }
 
-  let message = "*B2B ICT News:*\n\n";
-
   newsList.forEach((news, index) => {
     message += `📰 *${index + 1}. ${news.title}*\n🔗 ${news.link}\n\n`;
   });
 
+  let message = "<b>B2B ICT News:</b>\n\n";
+
+  newsList.forEach((news, index) => {
+    message += `📰 <b>${index + 1}. ${news.title}</b>\n🔗 ${news.link}\n\n`;
+  });
+
   try {
-    await bot.sendMessage(CHAT_ID, message, { parse_mode: "Markdown" });
+    await bot.sendMessage(CHAT_ID, message, { parse_mode: "HTML" });
     console.log("[sendNews] All news already send successfully");
   } catch (err) {
     console.error("[sendNews] Failed to send the news:", err.message);
