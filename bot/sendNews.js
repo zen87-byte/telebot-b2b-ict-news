@@ -11,10 +11,6 @@ async function sendNews() {
     return;
   }
 
-  newsList.forEach((news, index) => {
-    message += `📰 *${index + 1}. ${news.title}*\n🔗 ${news.link}\n\n`;
-  });
-
   let message = "<b>B2B ICT News:</b>\n\n";
 
   newsList.forEach((news, index) => {
