@@ -10,9 +10,10 @@ async function fetchAllNews() {
       const feed = await parser.parseURL(url);
       const items = feed.items.slice(0, MAX_ITEMS_PER_FEED);
 
-      const simplifiedItems = items.map(item => ({
+      const simplifiedItems = items.map((item) => ({
         title: item.title,
-        link: item.link
+        link: item.link,
+        description: item.description,
       }));
 
       allNews.push(...simplifiedItems);

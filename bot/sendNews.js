@@ -14,7 +14,7 @@ async function sendNews() {
   let message = "<b>B2B ICT News:</b>\n\n";
 
   newsList.forEach((news, index) => {
-    message += `📰 <b>${index + 1}. ${news.title}</b>\n🔗 ${news.link}\n\n`;
+    message += `📰 <b>${index + 1}. ${news.title}</b>\n🔗 ${news.link}\n Description: ${news.description}\n`;
   });
 
   try {
