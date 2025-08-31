@@ -13,7 +13,12 @@ async function fetchAllNews() {
       const simplifiedItems = items.map((item) => ({
         title: item.title,
         link: item.link,
-        description: item.description,
+        description:
+          item.contentSnippet ||
+          item.summary ||
+          item.description ||
+          item.content ||
+          "No description",
       }));
 
       allNews.push(...simplifiedItems);
