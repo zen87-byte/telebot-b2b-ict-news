@@ -1,28 +1,34 @@
-const TelegramBot = require("node-telegram-bot-api");
-const fetchAllNews = require("../services/fetchNews");
-const { BOT_TOKEN, CHAT_ID } = require("../config");
+// bot/sendNews.js
+import fetchNews from "../services/fetchNews.js";
+import fetch from "node-fetch";
 
-const bot = new TelegramBot(BOT_TOKEN);
+const sendNews = async () => {
+  const newsList = await fetchNews();
 
-async function sendNews() {
-  const newsList = await fetchAllNews();
-  if (!newsList.length) {
-    console.log("[sendNews] News is not found");
+  if (!newsList || newsList.length === 0) {
+    console.log("No news fetched");
     return;
   }
 
-  let message = "<b>B2B ICT News:</b>\n\n";
+  const token = process.env.BOT_TOKEN;
+  const chatId = process.env.CHAT_ID;
 
-  newsList.forEach((news, index) => {
-    message += `📰 <b>${index + 1}. ${news.title}</b>\n🔗 ${news.link}\n Description: ${news.description}\n\n`;
-  });
+  for (const news of newsList) {
+    const message = `📰 ${news.title}\n🔗 ${news.link}\n${news.description || ""}`;
 
-  try {
-    await bot.sendMessage(CHAT_ID, message, { parse_mode: "HTML" });
-    console.log("[sendNews] All news already send successfully");
-  } catch (err) {
-    console.error("[sendNews] Failed to send the news:", err.message);
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        disable_web_page_preview: true
+      })
+    });
+
+    const data = await res.json();
+    console.log("Telegram response:", data);
   }
-}
+};
 
-module.exports = sendNews;
+export default sendNews;
