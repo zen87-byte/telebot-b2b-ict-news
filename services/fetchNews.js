@@ -1,5 +1,6 @@
 const Parser = require("rss-parser");
-const puppeteer = require("puppeteer");
+const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
 const parser = new Parser();
 
 const RSS_FEEDS = process.env.RSS_FEEDS
@@ -14,8 +15,9 @@ async function resolveGoogleNewsLink(url) {
   let browser;
   try {
     browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      args: chromium.args,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     });
 
     const page = await browser.newPage();
