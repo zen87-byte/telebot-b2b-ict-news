@@ -11,14 +11,20 @@ const MAX_ITEMS_PER_FEED = parseInt(process.env.MAX_ITEMS_PER_FEED || "1", 10);
 async function resolveGoogleNewsLink(url) {
   try {
     const response = await axios.get(url, {
-      maxRedirects: 0,
-      validateStatus: (status) => status === 301 || status === 302,
+      maxRedirects: 5, // biar follow sampai akhir
     });
-    return response.headers.location || url;
-  } catch {
+
+    // axios simpan URL akhir di response.request.res.responseUrl
+    const finalUrl =
+      response.request?.res?.responseUrl || response.config.url || url;
+
+    return finalUrl;
+  } catch (err) {
+    console.error("[resolveGoogleNewsLink] Gagal resolve:", url, err.message);
     return url;
   }
 }
+
 
 async function fetchAllNews() {
   let allNews = [];
