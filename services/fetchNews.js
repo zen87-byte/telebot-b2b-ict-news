@@ -1,7 +1,8 @@
 const Parser = require("rss-parser");
 const puppeteer = require("puppeteer-core");
-const parser = new Parser();
 const chromium = require("@sparticuz/chromium");
+
+const parser = new Parser();
 
 const RSS_FEEDS = process.env.RSS_FEEDS
   ? process.env.RSS_FEEDS.split(",")
@@ -38,7 +39,7 @@ async function resolveGoogleNewsLink(url) {
     });
     await browser.close();
     return finalUrl;
-    
+
   } catch (err) {
     console.error("[resolveGoogleNewsLink] Gagal resolve:", url, err.message);
     if (browser) await browser.close();

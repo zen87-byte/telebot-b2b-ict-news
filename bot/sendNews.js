@@ -27,12 +27,23 @@ function cleanDescription(desc, maxLength = 800) {
   return text;
 }
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 async function sendNews() {
-  const newsList = await fetchAllNews();
+  let newsList = await fetchAllNews();
   if (!newsList.length) {
     console.log("[sendNews] News is not found");
     return;
   }
+
+  // Acak sebelum dikirim
+  newsList = shuffleArray(newsList);
 
   let message = "<b>B2B ICT News:</b>\n\n";
 
