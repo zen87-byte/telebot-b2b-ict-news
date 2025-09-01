@@ -2,6 +2,7 @@ const Parser = require("rss-parser");
 const chromium = require("chrome-aws-lambda");
 const puppeteer = require("puppeteer-core");
 const parser = new Parser();
+const chromium = require("@sparticuz/chromium");
 
 const RSS_FEEDS = process.env.RSS_FEEDS
   ? process.env.RSS_FEEDS.split(",")
@@ -11,31 +12,26 @@ const RSS_FEEDS = process.env.RSS_FEEDS
 
 const MAX_ITEMS_PER_FEED = parseInt(process.env.MAX_ITEMS_PER_FEED || "1", 10);
 
+
 async function resolveGoogleNewsLink(url) {
   let browser = null;
   try {
     browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
+      executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
 
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: "domcontentloaded" });
 
-    // setelah JS jalan, URL berubah ke artikel asli
-    const finalUrl = page.url();
-    return finalUrl;
-  } catch (err) {
-    console.error("[resolveGoogleNewsLink] Gagal resolve:", url, err.message);
-    return url;
+    return page.url();
   } finally {
-    if (browser) {
-      await browser.close();
-    }
+    if (browser) await browser.close();
   }
 }
+
 
 async function fetchAllNews() {
   let allNews = [];
