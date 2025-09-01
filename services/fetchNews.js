@@ -11,26 +11,31 @@ const RSS_FEEDS = process.env.RSS_FEEDS
 
 const MAX_ITEMS_PER_FEED = parseInt(process.env.MAX_ITEMS_PER_FEED || "1", 10);
 
-const axios = require("axios");
-
 async function resolveGoogleNewsLink(url) {
+  let browser = null;
   try {
-    const response = await axios.get(url, {
-      maxRedirects: 5, // follow up to 5 redirects
-      timeout: 10000,
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
     });
 
-    // axios automatically follows redirects, final URL ada di response.request.res.responseUrl
-    const finalUrl =
-      response.request.res.responseUrl || response.config.url || url;
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: "domcontentloaded" });
 
+    // setelah JS jalan, URL berubah ke artikel asli
+    const finalUrl = page.url();
     return finalUrl;
   } catch (err) {
     console.error("[resolveGoogleNewsLink] Gagal resolve:", url, err.message);
     return url;
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 }
-
 
 async function fetchAllNews() {
   let allNews = [];
@@ -64,7 +69,7 @@ async function fetchAllNews() {
       allNews.push(...simplifiedItems);
     } catch (error) {
       console.error(
-        `[fetchNews] Gagal ambil feed dari ${feedUrl}:`,
+        `[fetchAllNews] Gagal ambil feed dari ${feedUrl}:`,
         error.message
       );
     }
