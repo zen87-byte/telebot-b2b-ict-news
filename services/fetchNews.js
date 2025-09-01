@@ -83,7 +83,4 @@ async function fetchAllNews() {
   return allNews;
 }
 
-module.exports = {
-  fetchAllNews,
-  resolveGoogleNewsLink,
-};
+module.exports = fetchAllNews;
