@@ -1,5 +1,4 @@
 const Parser = require("rss-parser");
-const chromium = require("chrome-aws-lambda");
 const puppeteer = require("puppeteer-core");
 const parser = new Parser();
 const chromium = require("@sparticuz/chromium");
