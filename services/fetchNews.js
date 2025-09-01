@@ -2,6 +2,12 @@ const Parser = require("rss-parser");
 const axios = require("axios");
 const parser = new Parser();
 
+const RSS_FEEDS = process.env.RSS_FEEDS
+  ? process.env.RSS_FEEDS.split(",").map((f) => f.trim()).filter(Boolean)
+  : [];
+
+const MAX_ITEMS_PER_FEED = parseInt(process.env.MAX_ITEMS_PER_FEED || "1", 10);
+
 async function resolveGoogleNewsLink(url) {
   try {
     const response = await axios.get(url, {
@@ -14,7 +20,7 @@ async function resolveGoogleNewsLink(url) {
   }
 }
 
-async function fetchAllNews(RSS_FEEDS, MAX_ITEMS_PER_FEED) {
+async function fetchAllNews() {
   let allNews = [];
 
   for (const feedUrl of RSS_FEEDS) {
