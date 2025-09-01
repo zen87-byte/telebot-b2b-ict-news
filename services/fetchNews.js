@@ -38,7 +38,7 @@ async function fetchAllNews() {
         items.map(async (item) => {
           let realLink = item.link;
 
-          if (realLink.includes("news.google.com/rss/articles")) {
+          if (realLink.includes("news.google.com/rss")) {
             realLink = await resolveGoogleNewsLink(realLink);
           }
 
