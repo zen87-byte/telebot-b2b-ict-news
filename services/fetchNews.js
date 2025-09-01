@@ -11,38 +11,26 @@ const RSS_FEEDS = process.env.RSS_FEEDS
 
 const MAX_ITEMS_PER_FEED = parseInt(process.env.MAX_ITEMS_PER_FEED || "1", 10);
 
+const axios = require("axios");
+
 async function resolveGoogleNewsLink(url) {
-  let browser;
   try {
-    browser = await puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
+    const response = await axios.get(url, {
+      maxRedirects: 5, // follow up to 5 redirects
+      timeout: 10000,
     });
 
-    const page = await browser.newPage();
-    await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
-    );
+    // axios automatically follows redirects, final URL ada di response.request.res.responseUrl
+    const finalUrl =
+      response.request.res.responseUrl || response.config.url || url;
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
-
-    const finalUrl = await page.evaluate(() => {
-      const canonical = document.querySelector('link[rel="canonical"]');
-      if (canonical) return canonical.href;
-      const ogUrl = document.querySelector('meta[property="og:url"]');
-      if (ogUrl) return ogUrl.content;
-      return window.location.href;
-    });
-
-    await browser.close();
     return finalUrl;
   } catch (err) {
     console.error("[resolveGoogleNewsLink] Gagal resolve:", url, err.message);
-    if (browser) await browser.close();
     return url;
   }
 }
+
 
 async function fetchAllNews() {
   let allNews = [];
