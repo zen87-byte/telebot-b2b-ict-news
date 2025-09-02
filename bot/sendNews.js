@@ -52,9 +52,6 @@ async function sendNews() {
 
     message += `📰 <b>${index + 1}. ${news.title}</b>\n`;
     message += `🔗 ${news.link}\n`;
-    if (cleanDesc) {
-      message += `📝 ${cleanDesc}\n`;
-    }
     message += `\n`;
   });
 

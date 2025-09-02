@@ -28,7 +28,7 @@ async function resolveGoogleNewsLink(url) {
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
     );
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 90000 });
 
     const finalUrl = await page.evaluate(() => {
       const canonical = document.querySelector('link[rel="canonical"]');
@@ -39,7 +39,6 @@ async function resolveGoogleNewsLink(url) {
     });
     await browser.close();
     return finalUrl;
-
   } catch (err) {
     console.error("[resolveGoogleNewsLink] Gagal resolve:", url, err.message);
     if (browser) await browser.close();
@@ -66,12 +65,6 @@ async function fetchAllNews() {
           return {
             title: item.title,
             link: realLink,
-            description:
-              item.contentSnippet ||
-              item.summary ||
-              item.description ||
-              item.content ||
-              "No description",
           };
         })
       );
